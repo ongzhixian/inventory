@@ -1,0 +1,1 @@
+SET MSBuildSDKsPath=C:\Program Files\dotnet\sdk\2.1.603\Sdks
