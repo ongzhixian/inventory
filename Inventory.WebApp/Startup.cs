@@ -29,6 +29,22 @@ namespace Inventory.WebApp
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+
+                // My custom consent cookie
+                options.ConsentCookie = new CookieBuilder()
+                {
+                    Name = ".Inventory.Consent",            // Change from default of ".AspNet.Consent"
+                    Expiration = TimeSpan.FromDays(365),    // 
+                    IsEssential = true,                     // 
+                };
+
+                options.Secure = CookieSecurePolicy.Always; // Default: CookieSecurePolicy.None
+
+                // ZX:  For some reason, the HttpOnly does not work for the CookiePolicy 
+                //      Probably has got to do with the way it is implemented.
+                //      Comment out for now.
+                //options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+                
             });
 
 
