@@ -11,10 +11,21 @@
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
-              asp-fallback-href="~/lib/lib/pure/1.0.0./pure.css.min.css"
+              asp-fallback-href="~/lib/pure/1.0.0./pure-min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
+    <style type="text/css">
+        #cookieConsent {
+            border: 3px solid;
+            margin: 1em auto;
+            border-radius: 1em;
+            padding: 8px;
+            text-align: center;
+            width: 50%;
+        }
+    </style>
 
 </head>
 <body>
