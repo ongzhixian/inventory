@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    Layout = "_Login_Layout";
+    //Layout = "_Login_Layout";
 }
 
 <div class="pure-g">
@@ -9,13 +9,30 @@
     
     <div class="pure-u-1-3">
 
-        <h2 style="text-align:center">Inventory</h2>
+        <h1 style="text-align:center">Inventory</h1>
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p>
+                <span style="font-weight:bold;font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">
+                    TODO:
+                </span>
+                Some real content.
+            </p>
+
+        }
+        else
+        {
+        <div>
+            <p style="border:1px solid #ccc; background-color: #333; color: #ccc; padding:1em; border-radius:1em;">
+                You are currently unidentified to the system. <br/>
+                @Html.ActionLink("Login", "Login", "Account") now to identify yourself to the system.
+            </p>
+        </div>
+        }
 
 
-        
-        <footer style="text-align:center;">
-            <p>&copy; 2019 - Inventory</p>
-        </footer>
+        <partial name="_FooterPartial" />
     </div>
 
     <div class="pure-u-1-3"></div>

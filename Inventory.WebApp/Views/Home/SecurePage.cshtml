@@ -5,3 +5,35 @@
 <h3>@ViewData["Message"]</h3>
 
 <p>A mock secure page</p>
+
+<p>
+     
+</p>
+
+<style type="text/css">
+    table, th, td {
+        border:1px solid #ddd;
+        padding: .67em;
+    }
+    thead {
+        text-align:left;
+    }
+    tbody th {
+        text-align:left;
+        font-weight:normal;
+    }
+</style>
+
+<table>
+    <thead>
+        <tr>
+            <th>Attribute</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><th>User.Identities.Count</th><td>@User.Identities.Count()</td></tr>
+        <tr><th>User.Identity.IsAuthenticated</th><td>@User.Identity.IsAuthenticated</td></tr>
+        <tr><th>User.Identity.Name</th><td>@User.Identity.Name</td></tr>
+    </tbody>
+</table>
