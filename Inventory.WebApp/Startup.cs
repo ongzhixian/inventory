@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -52,15 +53,31 @@ namespace Inventory.WebApp
 
             // services.AddAuthorization(options => {
             // });
-            // services.AddAuthorization(options =>
-            // {
-            //     options.AddPolicy("Over18", policy =>
-            //     {
-            //         policy.AuthenticationSchemes.Add(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme);
-            //         policy.RequireAuthenticatedUser();
-            //         policy.Requirements.Add(new MinimumAgeRequirement());
-            //     });
-            // });
+            //services.AddAuthorization(options =>
+            //{
+            //    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+            //        Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
+            //        Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme,
+            //        "AzureAD"
+            //        );
+
+            //    defaultAuthorizationPolicyBuilder = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+            //    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+
+            //    //    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+            //    //JwtBearerDefaults.AuthenticationScheme,
+            //    //"AzureAD");
+            //    //    defaultAuthorizationPolicyBuilder =
+            //    //        defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+            //    //    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+
+            //    //options.AddPolicy("Over18", policy =>
+            //    //{
+            //    //    policy.AuthenticationSchemes.Add(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme);
+            //    //    policy.RequireAuthenticatedUser();
+            //    //    policy.Requirements.Add(new MinimumAgeRequirement());
+            //    //});
+            //});
 
             // Override antiforgery cookie
             services.AddAntiforgery(options => {
@@ -70,14 +87,42 @@ namespace Inventory.WebApp
             // services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
             // .AddCookie(options => {
             // });
-            services.AddAuthentication()
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                
+            })
             .AddCookie(options => {
-                options.LoginPath = "/Account/Unauthorized/";
-                options.AccessDeniedPath = "/Account/Forbidden/";
+                //Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.LoginPath
+                // https://github.com/aspnet/AspNetCore/blob/master/src/Security/Authentication/Cookies/src/CookieAuthenticationDefaults.cs
+                //options.AccessDeniedPath = "/Account/AccessDenied/";  // Defaults to: "/Account/AccessDenied"; See CookieAuthenticationDefaults.LoginPath
+                //options.LoginPath = "/Account/Login/";                // Defaults to: "/Account/Login"; See CookieAuthenticationDefaults.LoginPath
+                //options.LogoutPath = "/Account/Logout/";              // Defaults to: "/Account/Logout"; See CookieAuthenticationDefaults.LoginPath
+                // options.SlidingExpiration = true;                    // Defaults is: true
+                //options.ReturnUrlParameter = "go";                    // Default is: "ReturnUrl"
+                //options.ExpireTimeSpan = TimeSpan.FromDays(14);       // Default is: TimeSpan.FromDays(14);
+                options.Cookie.Name = "csi.authentication";
             })
             .AddJwtBearer(options => {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidIssuer = Configuration["Tokens:Issuer"],
+                    ValidAudience = Configuration["Tokens:Issuer"],
+                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                        System.Text.Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                };
+
+
                 options.Audience = "http://localhost:5001/";
                 options.Authority = "http://localhost:5000/";
+            })
+            .AddJwtBearer("AzureAD", options =>
+            {
+                options.Audience = "https://localhost:5000/";
+                options.Authority = "https://login.microsoftonline.com/eb971100-6f99-4bdc-8611-1bc8edd7f436/";
             });
 
             services.AddMvc(options => {
@@ -122,6 +167,17 @@ namespace Inventory.WebApp
             app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
             app.UseHttpsRedirection();
+
+            // Demo Redirect vs Rewrite 
+            // https://docs.microsoft.com/en-gb/aspnet/core/fundamentals/url-rewriting?view=aspnetcore-2.2
+            // https://tahirnaushad.com/2017/08/18/url-rewriting-in-asp-net-core/
+            // Redirect: Server responds with status code 301 (Moved Permanently) or 302 (Found) with new Location header, instructing client to request the new location e.g. /movies
+            // Rewrite: Server will internally map to new location e.g. /stars and return 200 (OK).
+            var rewrite = new RewriteOptions()
+                .AddRedirect("films", "movies")
+                .AddRewrite("actors", "stars", true);
+            app.UseRewriter(rewrite);
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
