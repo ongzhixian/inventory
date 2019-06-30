@@ -32,11 +32,6 @@ namespace Inventory.WebApp.Controllers
             return View();
         }
 
-        public IActionResult Login()
-        {
-            return View();
-        }
-
         public IActionResult Privacy()
         {
             return View();
@@ -60,7 +55,7 @@ namespace Inventory.WebApp.Controllers
         {
 
             return StatusCode(403);
-            return View();
+            //return View();
         }
 
         [AllowAnonymous]

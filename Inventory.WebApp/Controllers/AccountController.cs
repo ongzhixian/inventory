@@ -13,6 +13,18 @@ namespace Inventory.WebApp.Controllers
 {
     public class AccountController : Controller
     {
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
         // GET: Account/Login
         [AllowAnonymous]
         public ActionResult Login()
@@ -21,6 +33,7 @@ namespace Inventory.WebApp.Controllers
         }
 
         // POST: Account/LoginAsync
+        [Route("Login")]
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -50,18 +63,18 @@ namespace Inventory.WebApp.Controllers
                     // The time at which the authentication ticket expires. A 
                     // value set here overrides the ExpireTimeSpan option of 
                     // CookieAuthenticationOptions set with AddCookie.
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+                    , ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
 
                     //IsPersistent = true,
                     // Whether the authentication session is persisted across 
                     // multiple requests. When used with cookies, controls
                     // whether the cookie's lifetime is absolute (matching the
                     // lifetime of the authentication ticket) or session-based.
-                    IsPersistent = true,
+                    , IsPersistent = true
 
                     //IssuedUtc = <DateTimeOffset>,
                     // The time at which the authentication ticket was issued.
-                    IssuedUtc = DateTimeOffset.Now
+                    , IssuedUtc = DateTimeOffset.Now
 
                     //RedirectUri = <string>
                     // The full path or absolute URI to be used as an http 
@@ -74,7 +87,9 @@ namespace Inventory.WebApp.Controllers
                 );
 
 
-                return RedirectToAction(nameof(Login));
+                //return RedirectToLocal(returnUrl);
+                //return RedirectToAction(nameof(SecurePage));
+                return RedirectToAction("SecurePage", "Home");
             }
             catch
             {
@@ -82,5 +97,23 @@ namespace Inventory.WebApp.Controllers
             }
         }
 
+        // GET: Account/Forbidden
+        [AllowAnonymous]
+        public ActionResult AccessDenied()
+        {
+            
+            return View();
+        }
+
+
+        // GET: Account/Logout
+        [AllowAnonymous]
+        public async Task<ActionResult> LogoutAsync()
+        {
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return View("Logout");
+        }
     }
 }
