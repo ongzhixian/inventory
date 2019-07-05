@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Inventory.WebApp
 {
@@ -48,7 +50,7 @@ namespace Inventory.WebApp
                 //      Probably has got to do with the way it is implemented.
                 //      Comment out for now.
                 //options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
-                
+
             });
 
             // services.AddAuthorization(options => {
@@ -80,9 +82,13 @@ namespace Inventory.WebApp
             //});
 
             // Override antiforgery cookie
-            services.AddAntiforgery(options => {
+            services.AddAntiforgery(options =>
+            {
                 options.Cookie.Name = "Inventory.AntiForgery";
             });
+
+
+
 
             // services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
             // .AddCookie(options => {
@@ -91,9 +97,10 @@ namespace Inventory.WebApp
             {
                 options.DefaultScheme = Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme;
                 //options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-                
+
             })
-            .AddCookie(options => {
+            .AddCookie(options =>
+            {
                 //Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.LoginPath
                 // https://github.com/aspnet/AspNetCore/blob/master/src/Security/Authentication/Cookies/src/CookieAuthenticationDefaults.cs
                 //options.AccessDeniedPath = "/Account/AccessDenied/";  // Defaults to: "/Account/AccessDenied"; See CookieAuthenticationDefaults.LoginPath
@@ -104,20 +111,32 @@ namespace Inventory.WebApp
                 //options.ExpireTimeSpan = TimeSpan.FromDays(14);       // Default is: TimeSpan.FromDays(14);
                 options.Cookie.Name = "csi.authentication";
             })
-            .AddJwtBearer(options => {
-                options.RequireHttpsMetadata = false;
+            .AddJwtBearer(options =>
+            {
+
+                //string secretKey = Configuration.GetSection("TokenProviderOptions:SecretKey").Value;
+                string secretKey = "secretKey";         // Configuration.GetSection("TokenProviderOptions:SecretKey").Value;
+                string issuer = "inventory_webapp";     // Configuration.GetSection("TokenProviderOptions:Issuer").Value
+                string audience = "zhixian";            //Configuration.GetSection("TokenProviderOptions:Audience").Value
+                var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+
+                options.Audience = audience; // Configuration.GetSection("TokenProviderOptions:Audience").Value;
+                options.ClaimsIssuer = issuer; // Configuration.GetSection("TokenProviderOptions:Issuer").Value;
                 options.SaveToken = true;
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = Configuration["Tokens:Issuer"],
-                    ValidAudience = Configuration["Tokens:Issuer"],
-                    IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
-                        System.Text.Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                    RequireExpirationTime = true,
+                    RequireSignedTokens = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = signingKey,
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
 
-
-                options.Audience = "http://localhost:5001/";
-                options.Authority = "http://localhost:5000/";
             })
             .AddJwtBearer("AzureAD", options =>
             {
@@ -125,10 +144,11 @@ namespace Inventory.WebApp
                 options.Authority = "https://login.microsoftonline.com/eb971100-6f99-4bdc-8611-1bc8edd7f436/";
             });
 
-            services.AddMvc(options => {
+            services.AddMvc(options =>
+            {
                 // Add filters here
                 //options.Filters.Add()
-                
+
                 // Add default policy which only allow authenticated users to view
                 // 
                 var policy = new AuthorizationPolicyBuilder()
@@ -183,6 +203,11 @@ namespace Inventory.WebApp
 
             // Use authentication
             app.UseAuthentication();
+            // app.UseJwtBearerAuthentication(new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions() {
+            //     Audience = "http://localhost:5001/", 
+            //     Authority = "http://localhost:5000/", 
+            //     AutomaticAuthenticate = true
+            // });
 
             app.UseMvc(routes =>
             {
