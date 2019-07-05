@@ -63,18 +63,21 @@ namespace Inventory.WebApp.Controllers
                     // The time at which the authentication ticket expires. A 
                     // value set here overrides the ExpireTimeSpan option of 
                     // CookieAuthenticationOptions set with AddCookie.
-                    , ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+                    ,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
 
                     //IsPersistent = true,
                     // Whether the authentication session is persisted across 
                     // multiple requests. When used with cookies, controls
                     // whether the cookie's lifetime is absolute (matching the
                     // lifetime of the authentication ticket) or session-based.
-                    , IsPersistent = true
+                    ,
+                    IsPersistent = true
 
                     //IssuedUtc = <DateTimeOffset>,
                     // The time at which the authentication ticket was issued.
-                    , IssuedUtc = DateTimeOffset.Now
+                    ,
+                    IssuedUtc = DateTimeOffset.Now
 
                     //RedirectUri = <string>
                     // The full path or absolute URI to be used as an http 
@@ -101,7 +104,7 @@ namespace Inventory.WebApp.Controllers
         [AllowAnonymous]
         public ActionResult AccessDenied()
         {
-            
+
             return View();
         }
 
@@ -115,5 +118,36 @@ namespace Inventory.WebApp.Controllers
 
             return View("Logout");
         }
+
+
+        // [AllowAnonymous]
+        // [HttpPost]
+        // public IActionResult RequestToken([FromBody] TokenRequest request)
+        // {
+        //     if (request.Username == "Jon" && request.Password == "Again, not for production use, DEMO ONLY!")
+        //     {
+        //         var claims = new[]
+        //         {
+        //             new Claim(ClaimTypes.Name, request.Username)
+        //         };
+
+        //         var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["SecurityKey"]));
+        //         var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
+
+        //         var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
+        //             issuer: "yourdomain.com",
+        //             audience: "yourdomain.com",
+        //             claims: claims,
+        //             expires: DateTime.Now.AddMinutes(30),
+        //             signingCredentials: creds);
+
+        //         return Ok(new
+        //         {
+        //             token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token)
+        //         });
+        //     }
+
+        //     return BadRequest("Could not verify username and password");
+        // }
     }
 }
