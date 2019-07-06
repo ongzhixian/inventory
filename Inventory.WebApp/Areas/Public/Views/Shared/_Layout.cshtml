@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>@ViewBag.Title</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <environment include="Development">
+      <link rel="stylesheet" href="~/css/public-area.css" />
+  </environment>
+  <environment exclude="Development">
+      <link rel="stylesheet" href="~/css/public-area.min.css" asp-append-version="true" />
+  </environment>
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/skeleton/2.0.4/normalize.css">
+  <link rel="stylesheet" href="css/skeleton/2.0.4/skeleton.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  @RenderSection("head", required: false)
+</head>
+<body>
+
+  <partial name="_TopNavbar" />
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  @RenderBody()
+
+
+  <footer>
+      Area [@ViewContext.RouteData.Values["area"]]
+      Controller [@ViewContext.RouteData.Values["controller"]]
+      Action [@ViewContext.RouteData.Values["action"]]
+  </footer>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+  @RenderSection("Scripts", required: false)
+</body>
+</html>
