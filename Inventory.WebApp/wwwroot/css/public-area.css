@@ -1,0 +1,97 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
+for details on configuring this project to bundle and minify static web assets. */
+
+body {
+  background-color: #224021;
+  color: #f2f2f2 !important;
+}
+
+  /* Add a color to the active/current link */
+  .navbar a.active {
+    background-color: #35402D;
+    color: white;
+  }
+
+/* Navbar container */
+.navbar {
+  background-color: #5F8C4A;
+  overflow: hidden;
+  border-bottom: 4px solid #71a758;
+}
+
+/* Links inside the navbar */
+.navbar a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+
+}
+  /* The dropdown container */
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+/* Dropdown button */
+.dropdown .dropbtn {
+  font-size: 17px; 
+  text-transform: none;
+  font-weight: normal;
+
+  letter-spacing: 0;
+  line-height: inherit;
+  height: auto;
+  border: none;
+  outline: none;
+  color: #f2f2f2;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit; /* Important for vertical align on mobile phones */
+  margin: 0; /* Important for vertical align on mobile phones */
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #59734D;
+  color: #f2f2f2;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  
+  background-color: #5F8C4A;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: #f2f2f2;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #59734D;
+  /* color: #592C22; */
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    
+}
