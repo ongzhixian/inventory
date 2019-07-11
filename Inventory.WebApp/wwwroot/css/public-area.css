@@ -6,6 +6,16 @@ body {
   color: #f2f2f2 !important;
 }
 
+footer {
+  text-align:center; 
+  margin-top:2em;
+}
+footer hr {
+  border-top: 4px solid #59734D;
+  width: 36%;
+  border-radius: 100%;
+}
+
   /* Add a color to the active/current link */
   .navbar a.active {
     background-color: #35402D;
