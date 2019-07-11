@@ -1,20 +1,51 @@
+@functions {
+    public string ActiveClass(string area, string controller, string action)
+    {
+        // Area [@ViewContext.RouteData.Values["area"]] Controller [@ViewContext.RouteData.Values["controller"]] Action [@ViewContext.RouteData.Values["action"]]'
+        // ZX:  Yeah, this works but is kind of clunky and its not DRY (see anchor taghelper)
+        //      It maybe better to write a dedicate tag helper or other mechanism
+        if (
+            (ViewContext.RouteData.Values["area"].ToString().Equals(area, StringComparison.InvariantCultureIgnoreCase))
+            && (ViewContext.RouteData.Values["controller"].ToString().Equals(controller, StringComparison.InvariantCultureIgnoreCase))
+            && (ViewContext.RouteData.Values["action"].ToString().Equals(action, StringComparison.InvariantCultureIgnoreCase))
+        )
+        return "active";
+
+        return string.Empty;
+    }
+}
+@{
+    
+    
+}
+
 <div class="navbar">
-    <a class="active" href="#home">Home</a>
-    <a href="#news">News</a>
+    <!-- <a class="active" href="#home">Home</a> -->
+    <a asp-area="Public" asp-controller="Home" asp-action="Index" class='@ActiveClass("Public", "Home", "Index")' title="Public Home">Home</a>
+    <a asp-area="Public" asp-controller="Home" asp-action="Salt" class='@ActiveClass("Public", "Home", "Salt")' title="Random salt generator">Salt</a>
+
+    <!-- <a href="#news">Random number</a>
+    <a href="#news">Dice</a> -->
+
+
+    <!-- <a href="#news">News</a> -->
+
+    <!-- <i class="fa fa-caret-down"></i> 
+            &star;&starf;&sect;&darr;&dArr;&sext;&VerticalSeparator;
+
+            &nearhk;&rarrb;&curarr;
+            https://www.toptal.com/designers/htmlarrows/letters/
     <div class="dropdown">
         <button class="dropbtn">Utilities &sect;
             
-            
-            <!-- <i class="fa fa-caret-down"></i> 
-            &star;&starf;&sect;&darr;&dArr;&sext;&VerticalSeparator;
-            https://www.toptal.com/designers/htmlarrows/letters/
-            -->
         </button>
         <div class="dropdown-content">
             <a href="#">Salt </a>
             <a href="#">AES</a>
-            <a href="#">Link 3</a>
+            <a href="#">Link 3</a> 
         </div>
     </div> 
-    <a href="#references">References</a>
+    -->
+    <!-- <a href="#references">References</a> -->
+    <span id="dbg_msg" class="debug message" style="font-size:.8em; float:right;margin: 4px 14px 0 0">Debug message</span>
 </div>
