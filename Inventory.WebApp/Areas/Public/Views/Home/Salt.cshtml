@@ -1,0 +1,99 @@
+@{
+    ViewBag.Title = "Salt - Public";
+}
+<div class="container">
+    <div class="row">
+        <h4 style="margin-top: 3em;">Salt</h4>
+    </div>
+    <div class="row">
+
+        <div class="one-half column" >
+            
+            <form>
+                <div class="row">
+                    <div class="six columns">
+                        <label for="exampleEmailInput">Length of salt (in bytes)</label>
+                        <input class="u-full-width" type="text" placeholder="Length of salt (in bytes)" id="salt_length" name="salt_length" value="16" 
+                        style="color:black;"
+                         />
+                    </div>
+                    <div class="six columns">
+                        <!-- <label for="exampleRecipientInput">Reason for contacting</label>
+                        <select class="u-full-width" id="exampleRecipientInput">
+                            <option value="Option 1">Questions</option>
+                            <option value="Option 2">Admiration</option>
+                            <option value="Option 3">Can I get your number?</option>
+                        </select> -->
+                    </div>
+                </div>
+                <label for="cipher_text">Salt (as base-64 string)</label>
+                <textarea class="u-full-width" placeholder="Base64 salt" style="color:black;" id="cipher_text" name="cipher_text" readonly="readonly"></textarea>
+                <input class="button-primary" id="submitButton" type="button" value="Submit">
+            </form>
+
+        </div><!-- end one-half column -->
+
+        <div class="one-half column">
+            <p>
+                This is a &ldquo;<a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">salt&curarr;</a>&rdquo; generator.
+            </p>
+            <p>
+                A salt is random data that is added to a piece of information like passphrases 
+                to enhance the encryption of the passphrase for storage.
+            </p>
+            
+        </div><!-- end one-half column -->
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+    (function ($) {
+        "use strict";
+        var app = {
+            url : '/api/Public/Salt'
+        };
+
+        $(document).ready(function () {
+            $("#submitButton").click(function (e) {
+                console.log("Submit button clicked.");
+                console.log("app.url is ", app.url);
+
+                var $dbgMsg = $("#dbg_msg");
+                $dbgMsg.text("asd");
+
+                $.ajax({
+                    url: app.url,
+                    dataType: 'json',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    cache: false,
+                    data: $("#salt_length").val(),
+                    dataType: "json",
+                    beforeSend: function(jqXHR, settings) {
+                    },
+                    success: function( data, textStatus, jQxhr ){
+                        console.log("success", data);
+                        console.log(data);
+                        debugger;
+                        $("#cipher_text").text(data.base64Salt);
+                    },
+                    error: function( jqXhr, textStatus, errorThrown ){
+                        console.log( errorThrown );
+                    },
+                    complete: function(jqXHR, textStatus) {
+                        console.log("AJAX call complete.");
+                    }
+                });
+
+                // 
+                var url = '/api/Public/Salt'
+
+            });
+
+        });
+    }(jQuery));
+
+    </script>
+}
